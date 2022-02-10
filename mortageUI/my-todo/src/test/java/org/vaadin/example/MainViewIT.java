@@ -1,66 +1,56 @@
 package org.vaadin.example;
-
-import com.vaadin.flow.component.textfield.testbench.TextFieldElement;
 import org.junit.Assert;
-import org.junit.Test;
-import org.openqa.selenium.Keys;
-import org.openqa.selenium.WebElement;
+import org.junit.Test;;
+import org.junit.jupiter.api.AfterEach;
 
-import com.vaadin.flow.component.button.testbench.ButtonElement;
-import com.vaadin.flow.component.notification.testbench.NotificationElement;
-import com.vaadin.flow.theme.lumo.Lumo;
+import java.util.List;
 
-public class MainViewIT extends AbstractViewTest {
+public class MainViewIT{
+
+    @AfterEach
+    public void teardown(){}
 
     @Test
-    public void clickingButtonShowsNotification() {
-        Assert.assertFalse($(NotificationElement.class).exists());
-        $(ButtonElement.class).first().click();
-        Assert.assertTrue($(NotificationElement.class).waitForFirst().isOpen());
+    public void testAddProspect(){
+        FileService service = new FileService();
+
+        String name = "sofia";
+        Double loan = 1000.0;
+        Double rate = 2.0;
+        Double years = 5.0;
+
+        Customer cust = service.addCusomer(name,loan, rate, years,5);
+
+        Assert.assertEquals(cust.getCustomer(),name);
+        Assert.assertEquals(cust.getTotalLoan(),loan);
+        Assert.assertEquals(cust.getYearlyInterestRate(),rate);
+        Assert.assertEquals(cust.getYears(),years);
+
     }
 
     @Test
-    public void clickingButtonTwiceShowsTwoNotifications() {
-        Assert.assertFalse($(NotificationElement.class).exists());
-        ButtonElement button = $(ButtonElement.class).first();
-        button.click();
-        button.click();
-        Assert.assertEquals(2, $(NotificationElement.class).all().size());
+    public void testCalculation(){
+        FileService service = new FileService();
+
+        String name = "sofia";
+        Double loan = 1000.0;
+        Double rate = 5.0;
+        Double years = 2.0;
+
+        Customer cust = service.addCusomer(name,loan, rate, years,5);
+        cust.calculate();
+
+        Customer addedCustomer = new Customer(name, loan, rate,years,5);
+        addedCustomer.setE(43.8713897340686);
+
+        Assert.assertEquals(cust.getE(),addedCustomer.getE(), 0.001);
     }
 
     @Test
-    public void buttonIsUsingLumoTheme() {
-        WebElement element = $(ButtonElement.class).first();
-        assertThemePresentOnElement(element, Lumo.class);
-    }
+    public void parseFileSize(){
+        FileService service = new FileService();
+        List<Customer> list = service.getCustomers();
 
-    @Test
-    public void testClickButtonShowsHelloAnonymousUserNotificationWhenUserNameIsEmpty() {
-        ButtonElement button = $(ButtonElement.class).first();
-        button.click();
-        Assert.assertTrue($(NotificationElement.class).exists());
-        NotificationElement notification = $(NotificationElement.class).first();
-        Assert.assertEquals("Hello anonymous user", notification.getText());
-    }
-
-    @Test
-    public void testClickButtonShowsHelloUserNotificationWhenUserIsNotEmpty() {
-        TextFieldElement textField = $(TextFieldElement.class).first();
-        textField.setValue("Vaadiner");
-        ButtonElement button = $(ButtonElement.class).first();
-        button.click();
-        Assert.assertTrue($(NotificationElement.class).exists());
-        NotificationElement notification = $(NotificationElement.class).first();
-        Assert.assertEquals("Hello Vaadiner", notification.getText());
-    }
-
-    @Test
-    public void testEnterShowsHelloUserNotificationWhenUserIsNotEmpty() {
-        TextFieldElement textField = $(TextFieldElement.class).first();
-        textField.setValue("Vaadiner");
-        textField.sendKeys(Keys.ENTER);
-        Assert.assertTrue($(NotificationElement.class).exists());
-        NotificationElement notification = $(NotificationElement.class).first();
-        Assert.assertEquals("Hello Vaadiner", notification.getText());
+        Assert.assertEquals(list.size(), 4);
     }
 }

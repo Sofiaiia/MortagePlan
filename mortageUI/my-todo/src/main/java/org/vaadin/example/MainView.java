@@ -1,5 +1,6 @@
 package org.vaadin.example;
 
+import com.vaadin.flow.component.button.ButtonVariant;
 import com.vaadin.flow.component.dependency.CssImport;
 import com.vaadin.flow.component.formlayout.FormLayout;
 import com.vaadin.flow.component.grid.Grid;
@@ -56,6 +57,7 @@ public class MainView extends VerticalLayout {
 
         FormLayout formLayout = new FormLayout();
         formLayout.add(textField, Total_loan,Yearly_interest,years);
+
         Grid<Customer> grid = new Grid<>(Customer.class, false);
 
         grid.addColumn(Customer::getProspectNr).setHeader("Prospect number ").setAutoWidth(true);
@@ -68,15 +70,19 @@ public class MainView extends VerticalLayout {
         grid.setItems(proscpects);
 
         Button button = new Button("Add prospect");
-        button.addClickListener(e ->{
-            Customer tobeadded = service.addCusomer(textField.getValue(), Total_loan.getValue(), Yearly_interest.getValue(), years.getValue(), proscpects.size() + 1);
-            tobeadded.calculate();
-            proscpects.add(tobeadded);
-            grid.getDataProvider().refreshAll();
+        button.addThemeVariants(ButtonVariant.LUMO_PRIMARY);
+        button.addClickListener(click ->{
+            if(!textField.getValue().isEmpty() && !Total_loan.isEmpty() && !Yearly_interest.isEmpty() && !years.isEmpty()){
+                Customer tobeadded = service.addCusomer(textField.getValue(), Total_loan.getValue(), Yearly_interest.getValue(), years.getValue(), proscpects.size() + 1);
+                tobeadded.calculate();
+                proscpects.add(tobeadded);
+                grid.getDataProvider().refreshAll();
+            }
         });
 
-        addClassName("centered-content");
+        setAlignItems(Alignment.CENTER);
 
+        addClassName("centered-content");
         add(heading,formLayout,button,grid);
     }
 
