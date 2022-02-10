@@ -4,6 +4,7 @@ import com.vaadin.flow.component.button.ButtonVariant;
 import com.vaadin.flow.component.dependency.CssImport;
 import com.vaadin.flow.component.formlayout.FormLayout;
 import com.vaadin.flow.component.grid.Grid;
+import com.vaadin.flow.component.html.Div;
 import com.vaadin.flow.component.html.H1;
 import com.vaadin.flow.component.orderedlayout.VerticalLayout;
 import com.vaadin.flow.component.textfield.NumberField;
@@ -25,11 +26,15 @@ public class MainView extends VerticalLayout {
 
         List<Customer> proscpects = service.getCustomers();
         H1 heading = new H1("Prospects");
+        heading.addClassName("heading");
 
         TextField textField = new TextField();;
         textField.setLabel("Name");
         textField.setRequiredIndicatorVisible(true);
         textField.setErrorMessage("This field is required");
+
+        Div euroPrefix = new Div();
+        euroPrefix.setText("€");
 
         NumberField Total_loan = new NumberField();
         Total_loan.setLabel("Total loan (€)");
@@ -38,6 +43,10 @@ public class MainView extends VerticalLayout {
         Total_loan.setHasControls(true);
         Total_loan.setRequiredIndicatorVisible(true);
         Total_loan.setErrorMessage("This field is required");
+        Total_loan.setSuffixComponent(euroPrefix);
+
+        Div percentPrefix = new Div();
+        percentPrefix.setText("%");
 
         NumberField Yearly_interest = new NumberField();
         Yearly_interest.setLabel("Yearly interest");
@@ -46,6 +55,7 @@ public class MainView extends VerticalLayout {
         Yearly_interest.setHasControls(true);
         Yearly_interest.setRequiredIndicatorVisible(true);
         Yearly_interest.setErrorMessage("This field is required");
+        Yearly_interest.setSuffixComponent(percentPrefix);
 
         NumberField years = new NumberField();
         years.setLabel("Years");
@@ -57,6 +67,11 @@ public class MainView extends VerticalLayout {
 
         FormLayout formLayout = new FormLayout();
         formLayout.add(textField, Total_loan,Yearly_interest,years);
+        formLayout.setColspan(textField,3);
+        formLayout.setResponsiveSteps(
+                new FormLayout.ResponsiveStep("0", 1),
+                new FormLayout.ResponsiveStep("500px", 3)
+        );
 
         Grid<Customer> grid = new Grid<>(Customer.class, false);
 
