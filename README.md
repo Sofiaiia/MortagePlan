@@ -5,7 +5,7 @@ Code test for Crosskey trainee application
 `docker build -t my-image . && docker run my-image` 
 
 ## Start mortage-ui folder:
-- `mvn install -pProduction` 
+- `mvn install -Pproduction` 
 - `docker build -t vaadin-docker .`
 - `docker run -ti -p 8090:8080 vaadin-docker`
 
